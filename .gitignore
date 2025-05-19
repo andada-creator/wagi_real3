@@ -1,0 +1,18 @@
+# Python
+*.pyc
+__pycache__/
+
+# Django
+db.sqlite3
+/media/
+
+# 가상환경
+myvenv/
+venv/
+
+# 기타
+*.log
+.env
+/staticfiles/
+/.idea/
+/.vscode/
