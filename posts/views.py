@@ -1,17 +1,35 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from .models import Post, PostImage
 from .serializers import PostSerializer
 from django.shortcuts import render, get_object_or_404, redirect
+
+# posts/views.py
+
 
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']  # 제목에 대해 검색 가능하게 설정
+
+
 
 def post_list(request):
-    posts = Post.objects.all().order_by('-created_at')
+    search_query = request.GET.get('search', '')  # GET 파라미터에서 'search' 값을 받아옴
+
+    if search_query:
+        posts = Post.objects.filter(title__icontains=search_query).order_by('-created_at')
+    else:
+        posts = Post.objects.all().order_by('-created_at')
+
     return render(request, 'posts/post_list.html', {'posts': posts})
+
+
+#def post_list(request):
+    #posts = Post.objects.all().order_by('-created_at')
+    #return render(request, 'posts/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
